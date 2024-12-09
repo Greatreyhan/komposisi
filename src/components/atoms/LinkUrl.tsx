@@ -16,8 +16,10 @@ const LinkUrl: React.FC<LinkUrlProps> = ({
 }) => {
   // Define variant classes
   const variants = {
-    primary: `bg-primary hover:bg-primary-dark text-base-white rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 `,
-    secondary: `bg-secondary hover:bg-secondary-dark text-base-white rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2`,
+    primary: `bg-primary hover:bg-primary-dark text-base-white rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 py-2 px-4 
+`,
+    secondary: `bg-secondary hover:bg-secondary-dark text-base-white rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 py-2 px-4 
+`,
     ghost: `bg-transparent text-primary hover:underline`, 
   };
 
@@ -25,7 +27,6 @@ const LinkUrl: React.FC<LinkUrlProps> = ({
     <Link
       to={to}
       className={`
-        py-2 px-4 
         font-semibold text-center text-base
         transition ease-in duration-200 
         ${variants[variant]} ${className}

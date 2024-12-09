@@ -17,7 +17,7 @@ const Button: React.FC<ButtonProps> = ({
   const variants = {
     primary: `bg-primary hover:bg-primary-dark text-base-white rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 `,
     secondary: `bg-secondary hover:bg-secondary-dark text-base-white rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 `,
-    ghost: `bg-transparent text-primary hover:underline `,
+    ghost: `bg-transparent text-primary `,
   };
 
   return (
