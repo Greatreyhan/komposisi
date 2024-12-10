@@ -2,14 +2,18 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Card from '../molecules/Card';
 import Title from '../atoms/Title';
+import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
+import { db } from "../../config/firebase";
 
 // Define the structure of the card data
 interface CardData {
-  id: number; // Assuming id is a number
-  link: string; // URL for the card link
-  title: string; // Title of the card
-  subtitle: string; // Subtitle of the card
-  image: string; // Image URL for the card
+  id: string; 
+  name: string;
+  type: string; 
+  variation: string;
+  description: string; 
+  code: string; 
+  image: string; 
 }
 
 const CardList: React.FC = () => {
@@ -20,21 +24,20 @@ const CardList: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get<CardData[]>('https://'); // Replace with your API endpoint
-        const data = response.data;
-
-        if (data.length === 0) {
-          setCards(getDummyData());
-        } else {
-          setCards(data);
-        }
+        const q = query(collection(db, 'atoms'), orderBy('created', 'desc'));
+        onSnapshot(q, (querySnapshot) => {
+          const fetchedCards = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data() as Omit<CardData, 'id'> // Spread the data and omit the id
+          }));
+          setCards(fetchedCards);
+        });
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
           setError(error.response.data.message || 'An error occurred while fetching data');
         } else {
           setError('An unknown error occurred');
         }
-        setCards(getDummyData());
       } finally {
         setLoading(false);
       }
@@ -43,120 +46,34 @@ const CardList: React.FC = () => {
     fetchData();
   }, []);
 
-  // Function to generate dummy data
-  const getDummyData = (): CardData[] => {
-    return [
-      {
-        id: 1,
-        link: '/details',
-        title: 'Button',
-        subtitle: '1 variations',
-        image: '/src/assets/components.jpg',
-      },
-      {
-        id: 2,
-        link: '/details',
-        title: 'Button',
-        subtitle: '2 variations',
-        image: '/src/assets/components.jpg',
-      },
-      {
-        id: 3,
-        link: '/details',
-        title: 'Button',
-        subtitle: '3 variations',
-        image: '/src/assets/components.jpg',
-      },
-      {
-        id: 4,
-        link: '/details',
-        title: 'Button',
-        subtitle: '4 variations',
-        image: '/src/assets/components.jpg',
-      },
-    ];
-  };
-
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  // if (error) {
-  //   return <div>Error: {error}</div>; // Error state
-  // }
+  if (error) {
+    return <div>Error: {error}</div>; // Error state
+  }
+
+  const sections = ['atoms', 'molecules', 'organisms', 'templates', 'pages'];
 
   return (
     <>
-      <div>
-        <Title variant='h3' className='my-8'>Atoms Section</Title>
-        <div className='flex flex-wrap gap-10 justify-end'>
-          {cards?.map((card) => (
-            <Card
-              key={card.id}
-              to={card.link}
-              title={card.title}
-              subtitle={card.subtitle}
-              src={card.image}
-            />
-          ))}
+      {sections.map(section => (
+        <div key={section}>
+          <Title variant='h3' className='my-8'>{`${section.charAt(0).toUpperCase() + section.slice(1)} Section`}</Title>
+          <div className='flex flex-wrap gap-10 justify-end'>
+            {cards.filter(card => card.type === section).map(card => (
+              <Card
+                key={card.id}
+                to={`/details/${card.id}`} 
+                title={card.name} 
+                subtitle={`${card.variation} variations`} 
+                src={card.image}
+              />
+ ))}
+          </div>
         </div>
-      </div>
-      <div>
-        <Title variant='h3' className='my-8'>Molecules Section</Title>
-        <div className='flex flex-wrap gap-10 justify-end'>
-          {cards?.map((card) => (
-            <Card
-              key={card.id}
-              to={card.link}
-              title={card.title}
-              subtitle={card.subtitle}
-              src={card.image}
-            />
-          ))}
-        </div>
-      </div>
-      <div>
-        <Title variant='h3' className='my-8'>Organisms Section</Title>
-        <div className='flex flex-wrap gap-10 justify-end'>
-          {cards?.map((card) => (
-            <Card
-              key={card.id}
-              to={card.link}
-              title={card.title}
-              subtitle={card.subtitle}
-              src={card.image}
-            />
-          ))}
-        </div>
-      </div>
-      <div>
-        <Title variant='h3' className='my-8'>Templates Section</Title>
-        <div className='flex flex-wrap gap-10 justify-end'>
-          {cards?.map((card) => (
-            <Card
-              key={card.id}
-              to={card.link}
-              title={card.title}
-              subtitle={card.subtitle}
-              src={card.image}
-            />
-          ))}
-        </div>
-      </div>
-      <div>
-        <Title variant='h3' className='my-8'>Pages Section</Title>
-        <div className='flex flex-wrap gap-10 justify-end'>
-          {cards?.map((card) => (
-            <Card
-              key={card.id}
-              to={card.link}
-              title={card.title}
-              subtitle={card.subtitle}
-              src={card.image}
-            />
-          ))}
-        </div>
-      </div>
+      ))}
     </>
   );
 };

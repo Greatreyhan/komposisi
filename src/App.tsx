@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Dashboard from './components/pages/Dashboard'
 import Detail from './components/pages/Detail'
+import AddComponent from './tests/AddComponent'
 
 function App() {
 
@@ -9,7 +10,9 @@ function App() {
     <BrowserRouter>
     <Routes>
       <Route path="/dashboard" element={<Dashboard />} />
-      <Route path="/details" element={<Detail />} />
+      {/* <Route path="/:type" element={<Dashboard />} /> */}
+      <Route path="/details/:id" element={<Detail />} />
+      <Route path="/add" element={<AddComponent />} />
     </Routes>
     </BrowserRouter>
     </>

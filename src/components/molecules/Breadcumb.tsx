@@ -22,7 +22,7 @@ const Breadcumb: React.FC<BreadcumbProps> = ({ navigator, variation = 'default',
         <div className={`${baseStyles} ${className}`}>
             {navigator.map((item, index) => {
                 // Construct the URL based on the current index
-                const url = `/${navigator.slice(0, index + 1).join('/')}`;
+                const url = `/${navigator.slice(0, index + 1).join('/').toLowerCase()}`;
                 
                 return (
                     <React.Fragment key={index}>
