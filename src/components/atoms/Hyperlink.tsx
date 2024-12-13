@@ -4,12 +4,14 @@ interface HyperlinkProps {
   children: ReactNode;
   url: string;
   variant?: 'primary' | 'secondary' | 'ghost';
+  target?: 'self' | 'tab';
   className?: string;
 }
 
 const Hyperlink: React.FC<HyperlinkProps> = ({ 
   children, 
   url,
+  target= "self",
   variant = 'primary', 
   className = '', 
 }) => {
@@ -23,6 +25,7 @@ const Hyperlink: React.FC<HyperlinkProps> = ({
   return (
     <a
       href={url}
+      target={target}
       className={`
         py-1.5 px-2
         font-semibold text-center text-base

@@ -24,9 +24,11 @@ const Navigation: React.FC<NavigationProps> = ({ className }) => {
 
                     {/* Left */}
                     <div className="flex items-center">
+
                         {/* Logo */}
-                        <Logo className='w-5' url='/' src='/src/assets/logo.png' />
-                        <h1 className='text-xl font-semibold ml-2'>Komposisi.</h1>
+                        <Logo className='w-8' url='/' src='/src/assets/logo.png' />
+                        <h1 className='text-xl font-semibold ml-2'>OASYSKIT.</h1>
+
                     </div>
 
                     {/* Menu */}
@@ -44,9 +46,9 @@ const Navigation: React.FC<NavigationProps> = ({ className }) => {
                             <Button variant='ghost'><MdOutlineSearch className='text-2xl' /></Button>
                         </div>
                         <div className='px-2 border-l md:flex items-center hidden'>
-                            <Hyperlink url={'#'} variant='ghost'><FaGithub className='text-2xl' /></Hyperlink>
-                            <Hyperlink url={'#'} variant='ghost'><FaLinkedin className='text-2xl' /></Hyperlink>
-                            <Hyperlink url={'#'} variant='ghost'><FaInstagram className='text-2xl' /></Hyperlink>
+                            <Hyperlink url={'https://github.com/Greatreyhan/komposisi'} variant='ghost'><FaGithub className='text-2xl' /></Hyperlink>
+                            <Hyperlink url={'https://www.linkedin.com/in/greatreyhan/'} variant='ghost'><FaLinkedin className='text-2xl' /></Hyperlink>
+                            <Hyperlink url={'https://www.instagram.com/greatreyhans/'} variant='ghost'><FaInstagram className='text-2xl' /></Hyperlink>
                         </div>
                     </div>
 

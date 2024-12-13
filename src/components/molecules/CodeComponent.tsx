@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import JsxParser from 'react-jsx-parser';
 import { Button, Title, Hyperlink, Image, LinkUrl, Paragraph, Text } from '../atoms';
-import { MdCode, MdRemoveRedEye, MdFileCopy } from "react-icons/md";
+import { MdCode, MdRemoveRedEye, MdFileCopy, MdDownload } from "react-icons/md";
 
 // Wrapping components to ensure no prop mismatch
 const WrappedButton = (props: any) => <Button {...props} />;
@@ -19,24 +19,33 @@ const WrappedText = (props: any) => <Text {...props} />;
 interface CodeComponentProps {
   code: string;
   language: string;
-  name: string;
+  title: string;
+  description: string;
+  variation: number;
   className?: string;
 }
 
 // CodeComponent to display raw code or rendered content
-const CodeComponent: React.FC<CodeComponentProps> = ({ name, code, language, className }) => {
+const CodeComponent: React.FC<CodeComponentProps> = ({ title, description, code, language, variation, className }) => {
   const [copied, setCopied] = useState<boolean>(false);
   const [showRendered, setShowRendered] = useState<boolean>(false);
 
   const handleCopy = () => {
     setCopied(true);
+    console.log(copied)
     setTimeout(() => setCopied(false), 1000);
   };
 
+  useEffect(()=>{setShowRendered(variation > 0)},[])
+
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
-      <div className="flex justify-between items-center">
-        <span className="text-lg font-bold">{name}</span>
+      <div className='mt-8'>
+      <p className="text-xl font-bold capitalize">{title}</p>
+      <Paragraph className='mt-2 w-8/12 text-primary-dark text-opacity-70'>{description}</Paragraph>
+      </div>
+      <div className="flex justify-end items-center">
+
         <div className="flex items-center gap-4">
           {/* Toggle Buttons */}
           <div className="flex gap-2 bg-gray-100 p-1 rounded-lg shadow">
@@ -53,7 +62,13 @@ const CodeComponent: React.FC<CodeComponentProps> = ({ name, code, language, cla
              <MdRemoveRedEye />
             </Button>
           </div>
-
+          <Hyperlink
+              target='tab'
+              url='https://github.com/Greatreyhan/komposisi/blob/master/src/components/atoms/Button.tsx'
+              variant={'primary'}
+            >
+             <MdDownload />
+          </Hyperlink>
           {/* Copy Button */}
           <CopyToClipboard text={code} onCopy={handleCopy}>
             <Button className='py-2'>

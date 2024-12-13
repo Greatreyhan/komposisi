@@ -5,10 +5,13 @@ import Editor from '@monaco-editor/react';
 
 const AddComponent: React.FC = () => {
     const [name, setName] = useState<string>('');
-    const [type, setType] = useState<string>(''); 
-    const [code, setCode] = useState<string>(''); 
-    const [description, setDescription] = useState<string>(''); 
-    const [variation, setVariation] = useState<number | ''>(''); 
+    const [title, setTitle] = useState<string>(''); // New state for title
+    const [type, setType] = useState<string>('');
+    const [code, setCode] = useState<string>('');
+    const [description, setDescription] = useState<string>('');
+    const [descriptionComponent, setDescriptionComponent] = useState<string>('');
+    const [variation, setVariation] = useState<number | ''>('');
+    const [githubLink, setGithubLink] = useState<string>('');
     const [message, setMessage] = useState<string | null>(null);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -17,16 +20,24 @@ const AddComponent: React.FC = () => {
             await addDoc(collection(db, type), {
                 name,
                 type,
-                code,
                 description,
-                variation,
                 created: Timestamp.now(),
+                data:
+                    [{
+                        title,
+                        code,
+                        description: descriptionComponent,
+                        variation,
+                        githubLink
+                    }]
             });
             setName('');
+            setTitle(''); // Reset title
             setType('');
             setCode('');
-            setDescription('');
+            setDescriptionComponent('');
             setVariation('');
+            setGithubLink('');
             setMessage('Message sent successfully!');
         } catch (err) {
             setMessage('Error sending message: ' + err);
@@ -34,8 +45,8 @@ const AddComponent: React.FC = () => {
     };
 
     return (
-        <div className="flex justify-center items-center w-screen h-screen">
-            <form onSubmit={handleSubmit} className="space-y-4 w-6/12 mx-auto px-8 py-6 bg-primary text-base-light rounded-lg shadow-md">
+        <div className="flex justify-center items-center w-full py-32 bg-base-light">
+            <form onSubmit={handleSubmit} className="space-y-4 w-6/12 mx-auto px-8 py-6 bg-white text-base-dark rounded-lg shadow-xl">
                 <h2 className="text-2xl font-bold mb-8 text-center">Add New Component</h2>
 
                 {message && (
@@ -45,7 +56,7 @@ const AddComponent: React.FC = () => {
                 )}
 
                 <div>
-                    <label className="block text-sm font-medium text-base-light">
+                    <label className="block text-sm font-medium text-base-dark">
                         Name:
                         <input
                             type="text"
@@ -56,8 +67,9 @@ const AddComponent: React.FC = () => {
                         />
                     </label>
                 </div>
+
                 <div>
-                    <label className="block text-sm font-medium text-base-light">
+                    <label className="block text-sm font-medium text-base-dark">
                         Type:
                         <select
                             value={type}
@@ -74,8 +86,34 @@ const AddComponent: React.FC = () => {
                         </select>
                     </label>
                 </div>
+
                 <div>
-                    <label className="block text-sm font-medium text-base-light">
+                    <label className="block text-sm font-medium text-base-dark">
+                        Description:
+                        <textarea
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            required
+                            className="mt-1 block w-full border border-base-light rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-base-dark h-32 resize-none"
+                        />
+                    </label>
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-base-dark">
+                        Title: {/* New Title Input */}
+                        <input
+                            type="text"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            required
+                            className="mt-1 block w-full border border-base-light rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-base-dark"
+                        />
+                    </label>
+                </div>
+                
+                <div>
+                    <label className="block text-sm font-medium text-base-dark">
                         Variation:
                         <input
                             type="number"
@@ -87,7 +125,7 @@ const AddComponent: React.FC = () => {
                     </label>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-base-light">
+                    <label className="block text-sm font-medium text-base-dark">
                         Code:
                         <Editor
                             height="200px"
@@ -104,13 +142,24 @@ const AddComponent: React.FC = () => {
                     </label>
                 </div>
                 <div>
-                    <label className="block text-sm font-medium text-base-light">
-                        Description:
+                    <label className="block text-sm font-medium text-base-dark">
+                        DescriptionComponent Component:
                         <textarea
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
+                            value={descriptionComponent}
+                            onChange={(e) => setDescriptionComponent(e.target.value)}
                             required
                             className="mt-1 block w-full border border-base-light rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-base-dark h-32 resize-none"
+                        />
+                    </label>
+                </div>
+                <div>
+                    <label className="block text-sm font-medium text-base-dark">
+                        GitHub Link:
+                        <input
+                            type="text"
+                            value={githubLink}
+                            onChange={(e) => setGithubLink(e.target.value)}
+                            required className="mt-1 block w-full border border-base-light rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 p-2 text-base-dark"
                         />
                     </label>
                 </div>

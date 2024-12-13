@@ -9,13 +9,19 @@ import { db } from '../../config/firebase';
 
 // Define the structure of the card data
 interface CardData {
-  id: string; 
+  id: string;
   name: string;
-  type: string; 
-  variation: string;
-  description: string; 
-  code: string; 
-  image: string; 
+  type: string;
+  description?: string;
+  data: [
+    {
+      title: string;
+      variation: string;
+      description: string;
+      code: string;
+      image: string;
+    }
+  ]
 }
 
 const Detail: React.FC = () => {
@@ -65,19 +71,27 @@ const Detail: React.FC = () => {
   }
 
   return (
-    <DetailLayout 
-      Navigation={<Navigation />} 
+    <DetailLayout
+      Navigation={<Navigation />}
       Content={
-        <div className='pt-16'>
-          <PageDescription description={card.description} name={card.name} type={card.type} />
-          <CodeComponent 
-            className='mt-4' 
-            name={card.name} 
-            code={card.code} 
-            language="tsx" 
-          />
+        <div className='py-16 w-10/12 mx-auto'>
+          <PageDescription description={card.description ?? ""} name={card.name} type={card.type} />
+          {card.data?.map((element,index) => {
+            return (
+              <CodeComponent
+                key={index}
+                className='mt-8'
+                title={element.title}
+                description={element.description}
+                code={element.code}
+                variation={parseInt(element.variation)}
+                language="tsx"
+              />
+            )
+          })}
+
         </div>
-      } 
+      }
     />
   );
 };

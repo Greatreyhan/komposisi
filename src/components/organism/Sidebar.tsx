@@ -1,20 +1,81 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import LinkUrl from '../atoms/LinkUrl';
 import List from '../molecules/List';
+import { collection, query, onSnapshot} from "firebase/firestore";
+import { db } from "../../config/firebase";
+import axios from 'axios';
 
 interface SidebarProps {
     className?: string;
-  }
+}
 
-const Sidebar: React.FC<SidebarProps> = ({className}) => {
+interface CardData {
+    id: string;
+    name: string;
+    type: string;
+    description?: string;
+    image: string;
+    data: [
+        {
+            title: string;
+            variation: string;
+            description: string;
+            code: string;
+            image: string;
+        }
+    ]
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ className }) => {
+    const [cards, setCards] = useState<CardData[]>([]); // State to hold the fetched card data
+    const [loading, setLoading] = useState<boolean>(true); // State to manage loading state
+    const [error, setError] = useState<string | null>(null); // State to manage error state
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const q = query(collection(db, 'atoms'));
+                onSnapshot(q, (querySnapshot) => {
+                    const fetchedCards = querySnapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data() as Omit<CardData, 'id'> // Spread the data and omit the id
+                    }));
+                    setCards(fetchedCards);
+                });
+            } catch (error) {
+                if (axios.isAxiosError(error) && error.response) {
+                    setError(error.response.data.message || 'An error occurred while fetching data');
+                } else {
+                    setError('An unknown error occurred');
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>; // Error state
+    }
     return (
         <div className={`bg-base-light border-r overflow-y-auto h-screen ${className}`}>
             <div className="flex flex-col sm:flex-row sm:justify-around">
-                <div className="h-full w-full">
+                <div className="h-full w-full py-8">
 
                     <nav className="mt-10 px-6 pb-8">
                         <p className='text-sm font-semibold mb-2 mt-4'>Atoms</p>
                         <List>
+                            {cards?.map(card => {
+                                return(<List.Item variant='ghost' className='text-start pl-2 hover:no-underline'><LinkUrl className='text-sm font-medium text-opacity-80 hover:text-opacity-100' to='/dashboard' variant='ghost'>{card.name}</LinkUrl></List.Item>)
+                            })}
+                            </List>
+                        {/* <List>
                             <List.Item variant='ghost' className='text-start pl-2 hover:no-underline'><LinkUrl className='text-sm font-medium text-opacity-80 hover:text-opacity-100' to='/dashboard' variant='ghost'>Avatars</LinkUrl></List.Item>
                             <List.Item variant='ghost' className='text-start pl-2 hover:no-underline'><LinkUrl className='text-sm font-medium text-opacity-80 hover:text-opacity-100' to='/dashboard' variant='ghost'>Alert</LinkUrl></List.Item>
                             <List.Item variant='ghost' className='text-start pl-2 hover:no-underline'><LinkUrl className='text-sm font-medium text-opacity-80 hover:text-opacity-100' to='/dashboard' variant='ghost'>Badges</LinkUrl></List.Item>
@@ -32,8 +93,8 @@ const Sidebar: React.FC<SidebarProps> = ({className}) => {
                             <List.Item variant='ghost' className='text-start pl-2 hover:no-underline'><LinkUrl className='text-sm font-medium text-opacity-80 hover:text-opacity-100' to='/dashboard' variant='ghost'>Toggles</LinkUrl></List.Item>
                             <List.Item variant='ghost' className='text-start pl-2 hover:no-underline'><LinkUrl className='text-sm font-medium text-opacity-80 hover:text-opacity-100' to='/dashboard' variant='ghost'>Text</LinkUrl></List.Item>
                             <List.Item variant='ghost' className='text-start pl-2 hover:no-underline'><LinkUrl className='text-sm font-medium text-opacity-80 hover:text-opacity-100' to='/dashboard' variant='ghost'>Toggles</LinkUrl></List.Item>
-                        </List>
-
+                        </List> */}
+{/* 
                         <p className='text-sm font-semibold mb-2 mt-4'>Molecules</p>
                         <List>
                             <List.Item variant='ghost' className='text-start pl-2 hover:no-underline'><LinkUrl className='text-sm font-medium text-opacity-80 hover:text-opacity-100' to='/dashboard' variant='ghost'>List Wrapper</LinkUrl></List.Item>
@@ -82,7 +143,7 @@ const Sidebar: React.FC<SidebarProps> = ({className}) => {
                             <List.Item variant='ghost' className='text-start pl-2 hover:no-underline'><LinkUrl className='text-sm font-medium text-opacity-80 hover:text-opacity-100' to='/dashboard' variant='ghost'>Dashboard Page</LinkUrl></List.Item>
                             <List.Item variant='ghost' className='text-start pl-2 hover:no-underline'><LinkUrl className='text-sm font-medium text-opacity-80 hover:text-opacity-100' to='/dashboard' variant='ghost'>Product Page</LinkUrl></List.Item>
                             <List.Item variant='ghost' className='text-start pl-2 hover:no-underline'><LinkUrl className='text-sm font-medium text-opacity-80 hover:text-opacity-100' to='/dashboard' variant='ghost'>About Page</LinkUrl></List.Item>
-                        </List>
+                        </List> */}
                     </nav>
                 </div>
             </div>

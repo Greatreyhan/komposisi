@@ -2,18 +2,25 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Card from '../molecules/Card';
 import Title from '../atoms/Title';
-import { collection, query, orderBy, onSnapshot } from "firebase/firestore";
+import { collection, query, onSnapshot} from "firebase/firestore";
 import { db } from "../../config/firebase";
 
 // Define the structure of the card data
 interface CardData {
-  id: string; 
+  id: string;
   name: string;
-  type: string; 
-  variation: string;
-  description: string; 
-  code: string; 
-  image: string; 
+  type: string;
+  description?: string;
+  image: string;
+  data: [
+    {
+      title: string;
+      variation: string;
+      description: string;
+      code: string;
+      image: string;
+    }
+  ]
 }
 
 const CardList: React.FC = () => {
@@ -24,7 +31,7 @@ const CardList: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const q = query(collection(db, 'atoms'), orderBy('created', 'desc'));
+        const q = query(collection(db, 'atoms'));
         onSnapshot(q, (querySnapshot) => {
           const fetchedCards = querySnapshot.docs.map(doc => ({
             id: doc.id,
@@ -65,12 +72,13 @@ const CardList: React.FC = () => {
             {cards.filter(card => card.type === section).map(card => (
               <Card
                 key={card.id}
-                to={`/details/${card.id}`} 
-                title={card.name} 
-                subtitle={`${card.variation} variations`} 
+                to={`/details/${card.id}`}
+                title={card.name}
+                subtitle={`${card.data.length ?? 0} variations`}
                 src={card.image}
+                alt={card.name}
               />
- ))}
+            ))}
           </div>
         </div>
       ))}
