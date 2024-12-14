@@ -4,6 +4,7 @@ import Detail from './components/pages/Detail'
 import AddComponent from './tests/AddComponent'
 import AdminDashboard from "./tests/AdminDashboard"
 import UpdateComponent from './tests/UpdateComponent'
+import Test from './tests/Test'
 
 function App() {
 
@@ -14,6 +15,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       {/* <Route path="/:type" element={<Dashboard />} /> */}
       <Route path="/details/:id" element={<Detail />} />
+      <Route path="/test" element={<Test />} />
       <Route path="/add" element={<AddComponent />} />
       <Route path="/add/:id" element={<UpdateComponent />} />
       <Route path="/admin" element={<AdminDashboard />} />
