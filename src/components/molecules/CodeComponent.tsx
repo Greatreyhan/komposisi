@@ -5,6 +5,7 @@ import { oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import JsxParser from 'react-jsx-parser';
 import { Button, Title, Hyperlink, Image, LinkUrl, Paragraph, Text } from '../atoms';
 import { MdCode, MdRemoveRedEye, MdFileCopy, MdDownload } from "react-icons/md";
+import Badge from '../atoms/Badges';
 
 // Wrapping components to ensure no prop mismatch
 const WrappedButton = (props: any) => <Button {...props} />;
@@ -14,6 +15,7 @@ const WrappedImage = (props: any) => <Image {...props} />;
 const WrappedLinkUrl = (props: any) => <LinkUrl {...props} />;
 const WrappedParagraph = (props: any) => <Paragraph {...props} />;
 const WrappedText = (props: any) => <Text {...props} />;
+const WrappedBadge = (props: any) => <Badge {...props} />;
 
 // Props for the CodeComponent
 interface CodeComponentProps {
@@ -89,6 +91,7 @@ const CodeComponent: React.FC<CodeComponentProps> = ({ title, description, code,
                 LinkUrl: WrappedLinkUrl,
                 Paragraph: WrappedParagraph,
                 Text: WrappedText,
+                Badge: WrappedBadge,
               }}
               jsx={code}
             />
